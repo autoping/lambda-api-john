@@ -1,0 +1,33 @@
+service: autoping-lambda-api-john
+
+frameworkVersion: '2'
+variablesResolutionMode: 20210326
+
+provider:
+  name: aws
+  stage: dev
+  region: eu-central-1
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+
+functions:
+
+  getMessages:
+    handler: handler.getMessages
+    events:
+      - http:
+          path: messages
+          method: get
+          cors: true
+
+  sendMessage:
+    handler: handler.sendMessage
+    events:
+      - http:
+          path: messages
+          method: post
+          cors: true
+
+plugins:
+  - serverless-ignore
+  - serverless-offline
