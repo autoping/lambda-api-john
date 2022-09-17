@@ -1,10 +1,10 @@
 'use strict';
 const uuid = require("uuid");
-// const AWS = require("aws-sdk");
+const AWS = require("aws-sdk");
 
 const messagesTableName = "messages";
 
-//to use for local and prod
+// //to use for local and prod
 const dynamodb = require('serverless-dynamodb-client');
 const docClient = dynamodb.doc;
 
@@ -29,6 +29,11 @@ module.exports.getMessages = async (event) => {
 
     return {
         statusCode: 200,
+        headers: {
+            "Access-Control-Allow-Headers" : "*",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*"
+        },
         body: JSON.stringify({
             items: m.Items
         })
