@@ -1,6 +1,6 @@
 'use strict';
 const uuid = require("uuid");
-const AWS = require("aws-sdk");
+// const AWS = require("aws-sdk");
 
 const messagesTableName = "messages";
 
@@ -30,7 +30,7 @@ module.exports.getMessages = async (event) => {
     return {
         statusCode: 200,
         body: JSON.stringify({
-            items: m
+            items: m.Items
         })
     }
 }
