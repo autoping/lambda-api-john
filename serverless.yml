@@ -1,17 +1,16 @@
 service: autoping-lambda-api-john
 
-frameworkVersion: '2'
+frameworkVersion: '3'
 variablesResolutionMode: 20210326
 
 provider:
   name: aws
   stage: dev
   region: eu-central-1
-  runtime: nodejs14.x
+  runtime: nodejs16.x
   lambdaHashingVersion: 20201221
 
 functions:
-
   getMessages:
     handler: handler.getMessages
     events:
@@ -29,5 +28,40 @@ functions:
           cors: true
 
 plugins:
-  - serverless-ignore
+  - serverless-dynamodb-local
   - serverless-offline
+  - serverless-ignore
+
+custom:
+  apigwBinary:
+    types:
+      - "*/*"
+  dynamodb:
+    # If you only want to use DynamoDB Local in some stages, declare them here
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true
+      seed: true
+      convertEmptyValues: true
+
+
+resources:
+  Resources:
+    users:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: messages
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
