@@ -2,13 +2,15 @@
 const uuid = require("uuid");
 const AWS = require("aws-sdk");
 
+const sqs = new AWS.SQS({apiVersion: '2012-11-05'});
+
 const messagesTableName = "messages";
 
 // //to use for local and prod
 const dynamodb = require('serverless-dynamodb-client');
 const docClient = dynamodb.doc;
 
-// //temp for local rn
+//temp for local rn
 // const docClient = new AWS.DynamoDB.DocumentClient({
 //     region: 'localhost',
 //     endpoint: 'http://localhost:8000',
@@ -17,6 +19,32 @@ const docClient = dynamodb.doc;
 // });
 
 
+async function produce(text, groupId, dedupId) {
+    return await sqs
+        .sendMessage({
+            MessageBody: text,
+            MessageGroupId: groupId,
+            MessageDeduplicationId: dedupId,
+            QueueUrl: "https://sqs.eu-central-1.amazonaws.com/587994125269/sqs-queue-autoping-inbound.fifo"
+        })
+        .promise();
+}
+
+module.exports.handleOutboundMessageSqs = async (event) => {
+    const records = event.Records;
+    for (var i = 0; i < records.length; i++) {
+        const message = JSON.parse(records[i].body);
+        console.log("Outbound message received (from SQS): " + JSON.stringify(message));
+
+        let params = {
+            TableName: messagesTableName,
+            Item: message
+        };
+
+        let result = await docClient.put(params).promise();
+    }
+
+}
 module.exports.getMessages = async (event) => {
     console.log("Get messages request received: " + JSON.stringify(event.queryStringParameters));
     let m = [];
@@ -61,6 +89,9 @@ module.exports.sendMessage = async (event) => {
     };
 
     let result = await docClient.put(params).promise();
+
+    await produce(JSON.stringify(message), message.cardId, message.id);
+
     console.log(result);
     return {
         statusCode: statusCode,
