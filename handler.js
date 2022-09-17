@@ -24,13 +24,13 @@ module.exports.getMessages = async (event) => {
         && event.queryStringParameters.initiatorId
         && event.queryStringParameters.cardId) {
 
-        m = await getMessages(event.queryStringParameters.initiatorId, event.queryStringParameters.cardId, +event.queryStringParameters.fromTime||1);
+        m = await getMessages(event.queryStringParameters.initiatorId, event.queryStringParameters.cardId, +event.queryStringParameters.fromTime || 1);
     }
 
     return {
         statusCode: 200,
         headers: {
-            "Access-Control-Allow-Headers" : "*",
+            "Access-Control-Allow-Headers": "*",
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "*"
         },
@@ -62,7 +62,14 @@ module.exports.sendMessage = async (event) => {
 
     let result = await docClient.put(params).promise();
     console.log(result);
-    return {statusCode: statusCode};
+    return {
+        statusCode: statusCode,
+        headers: {
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "*"
+        }
+    };
 }
 
 const getMessages = async function (initiatorId, cardId, fromTime) {
