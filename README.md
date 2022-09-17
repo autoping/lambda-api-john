@@ -1,5 +1,5 @@
 # Lambda API John
-API lambda handler used by John actors
+API lambda handler used by John actors 
 
 
 ### for local deploy use the following command
