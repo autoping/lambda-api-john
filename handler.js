@@ -53,6 +53,15 @@ module.exports.getMessages = async (event) => {
         m = await getMessages(event.queryStringParameters.initiatorId, event.queryStringParameters.cardId, +event.queryStringParameters.fromTime || 1);
     }
 
+    let messages = m.Items || [];
+    messages.sort((a, b) => {
+        if (a.createdAt <= b.createdAt) {
+            return -1;
+        } {
+            return 1;
+        }
+    });
+
     return {
         statusCode: 200,
         headers: {
@@ -60,7 +69,7 @@ module.exports.getMessages = async (event) => {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "*"
         },
-        body: JSON.stringify(m.Items)
+        body: JSON.stringify(messages)
     }
 }
 
