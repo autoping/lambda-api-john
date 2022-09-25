@@ -62,9 +62,7 @@ module.exports.getMessages = async (event) => {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "*"
         },
-        body: JSON.stringify({
-            items: m.Items
-        })
+        body: JSON.stringify(m.Items)
     }
 }
 
