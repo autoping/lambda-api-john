@@ -34,7 +34,6 @@ module.exports.handleOutboundMessageSqs = async (event) => {
     const records = event.Records;
     for (var i = 0; i < records.length; i++) {
         const message = JSON.parse(records[i].body);
-        console.log("Outbound message received (from SQS): " + JSON.stringify(message));
 
         let params = {
             TableName: messagesTableName,
@@ -46,7 +45,6 @@ module.exports.handleOutboundMessageSqs = async (event) => {
 
 }
 module.exports.getMessages = async (event) => {
-    console.log("Get messages request received: " + JSON.stringify(event.queryStringParameters));
     let m = [];
     if (event.queryStringParameters
         && event.queryStringParameters.initiatorId
@@ -67,7 +65,6 @@ module.exports.getMessages = async (event) => {
 }
 
 module.exports.sendMessage = async (event) => {
-    console.log("Outbound message received: " + JSON.stringify(event.body));
     const messageInput = JSON.parse(event.body);
     let statusCode = 201;
 
