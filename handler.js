@@ -81,7 +81,6 @@ module.exports.sendMessage = async (event) => {
         createdAt: Math.floor(Date.now() / 1000),
         inbound: true
     }
-    //todo: validate
 
     let params = {
         TableName: messagesTableName,
@@ -92,9 +91,9 @@ module.exports.sendMessage = async (event) => {
 
     await produce(JSON.stringify(message), message.cardId, message.id);
 
-    console.log(result);
     return {
         statusCode: statusCode,
+        body: JSON.stringify(message),
         headers: {
             "Access-Control-Allow-Headers": "*",
             "Access-Control-Allow-Origin": "*",
